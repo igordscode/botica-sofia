@@ -5,16 +5,16 @@ import json
 GROUP_ID = "120363406353899223@g.us"
 
 def notify(etapa, nome, numero, resumo):
-    # Limpa o número para o link (remove +, espaços, etc)
+    # Garante que o número tenha o formato + Internacional para o WhatsApp linkar automático
     clean_number = "".join(filter(str.isdigit, numero))
+    formatted_number = f"+{clean_number}"
     
-    # Monta a mensagem estruturada
+    # Monta a mensagem estruturada (Estilo Nativo)
     message = (
-        f"*Notificação BoticAI - Lead Qualificado* ✅\n\n"
-        f"*Etapa:* {etapa}\n"
+        f"*Notificação BoticAI - {etapa}* ✅\n\n"
         f"*Nome:* {nome}\n"
-        f"*Resumo:* {resumo}\n\n"
-        f"*Contato direto:* https://wa.me/{clean_number}"
+        f"*Número:* {formatted_number}\n"
+        f"*Resumo:* {resumo}"
     )
     
     payload = {
@@ -23,7 +23,7 @@ def notify(etapa, nome, numero, resumo):
     }
     
     # Saída para o OpenClaw
-    print(f"NOTIFY_SUCCESS: Lead {nome} enviado para o grupo.")
+    print(f"NOTIFY_SUCCESS: Lead {nome} notificado no grupo.")
     print(json.dumps(payload, indent=2))
 
 if __name__ == "__main__":
