@@ -6,6 +6,12 @@ ENV PATH="/root/.bun/bin:${PATH}"
 
 RUN corepack enable
 
+# Install Python and necessary libraries
+RUN apt-get update && apt-get install -y python3 python3-pip && \
+    pip3 install --break-system-packages psycopg2-binary requests python-dotenv && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
 WORKDIR /app
 
 ARG OPENCLAW_DOCKER_APT_PACKAGES=""

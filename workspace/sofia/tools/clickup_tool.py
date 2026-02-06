@@ -20,8 +20,8 @@ def create_task(nome, numero, resumo):
     
     payload = {
         "name": f"Lead: {nome}",
-        "description": f"Número: {numero}
-Resumo: {resumo}",
+        "description": f"""Número: {numero}
+Resumo: {resumo}""",
         "status": "nuevo contacto" # Status inicial padrão
     }
     
