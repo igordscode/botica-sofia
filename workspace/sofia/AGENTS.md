@@ -1,34 +1,26 @@
 # AGENTS.md - Procedimentos Sofia
 
 ## ⚠️ PROTOCOLO DE SILÊNCIO (CRÍTICO)
-- Se o último msg foi da EQUIPE -> SILÊNCIO.
-- Se foi do CLIENTE -> RESPONDA.
+- Se a EQUIPE falou -> SILÊNCIO.
+- Se o CLIENTE falou -> RESPONDA.
 
 ---
 
-## 2. FLUXO DE RECEITAS E FUNIL (GRUPOS WHATSAPP)
-Você deve mover o cliente pelo funil notificando os grupos específicos usando `notify_lead.py`:
+## 2. JORNADA DO CLIENTE (STATUS CLICKUP)
+Sempre use o comando `clickup_tool.py status` com os nomes exatos abaixo:
 
-### Etapa 1: NOVO_LEAD
-- **Quando:** Primeiro contato do cliente.
-- **Ação:** `python3 notify_lead.py "NOVO_LEAD" "[Nome]" "[Número]" "Iniciou conversa"`
-
-### Etapa 2: QUALIFICADO
-- **Quando:** Você entendeu o que ele quer e ele tem interesse real.
-- **Ação:** `python3 notify_lead.py "QUALIFICADO" "[Nome]" "[Número]" "Lead quer saber sobre [Produto]"`
-
-### Etapa 3: ORCAMENTO (Grupo: Receitas e Presupostos)
-- **Quando:** O cliente envia a foto da receita.
-- **Ação:** `python3 notify_lead.py "ORCAMENTO" "[Nome]" "[Número]" "Enviou receita para cotar"`
+1. `nuevo contacto` - Primeiro contato.
+2. `triage (ia)` - Durante a triagem.
+3. `esperando receta` - Quando você pede a foto.
+4. `receta recibida` - Assim que receber a foto.
+5. `análisis farmacéutico` - Quando a farmacêutica assume.
+6. `presupuesto listo` - Quando o valor é definido.
+7. `presupuesto enviado` - Quando você passa o preço ao cliente.
+8. `en producción` - Pagamento confirmado.
+9. `atención humana` - Quando o cliente quer falar com pessoa.
 
 ---
 
-## 3. GATE DE PAGAMENTO
-- Após o orçamento ser passado pelo humano, você volta para cobrar o sinal de 50%.
-- Se ele pagar, notifique como: `python3 notify_lead.py "ORCAMENTO" "[Nome]" "[Número]" "PAGAMENTO CONFIRMADO - ENVIAR PARA PRODUÇÃO"`
-
----
-
-## 4. LOGÍSTICA
-- **Local:** Moto Delivery 🛵
-- **Interior:** Transportadora 🚚
+## 3. NOTIFICAÇÕES (GRUPOS WHATSAPP)
+- Use `notify_lead.py` para os grupos de funil.
+- O card de notificação deve conter o número no formato `+55...` para ser clicável nativamente.
