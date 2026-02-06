@@ -1,26 +1,34 @@
 import sys
-import os
 import json
 
 # Configurações do Grupo
 GROUP_ID = "120363406353899223@g.us"
 
-def notify(message):
-    # Formata a mensagem para o padrão BoticAI
+def notify(etapa, nome, numero, resumo):
+    # Limpa o número para o link (remove +, espaços, etc)
+    clean_number = "".join(filter(str.isdigit, numero))
+    
+    # Monta a mensagem estruturada
+    message = (
+        f"*Notificação BoticAI - Lead Qualificado* ✅\n\n"
+        f"*Etapa:* {etapa}\n"
+        f"*Nome:* {nome}\n"
+        f"*Resumo:* {resumo}\n\n"
+        f"*Contato direto:* https://wa.me/{clean_number}"
+    )
+    
     payload = {
         "chatId": GROUP_ID,
-        "text": f"*Notificação BoticAI - Novo Lead!* ✅
-
-{message}"
+        "text": message
     }
     
-    # No OpenClaw, usamos o comando 'send' ou chamamos a API interna
-    # Por enquanto, vamos apenas dar um print que o OpenClaw captura como saída da tool
-    print(f"NOTIFY_SUCCESS: Mensagem enviada para o grupo {GROUP_ID}")
+    # Saída para o OpenClaw
+    print(f"NOTIFY_SUCCESS: Lead {nome} enviado para o grupo.")
     print(json.dumps(payload, indent=2))
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Erro: Mensagem não fornecida.")
+    if len(sys.argv) < 5:
+        print("Erro: Use: python3 notify_lead.py 'Etapa' 'Nome' 'Numero' 'Resumo'")
     else:
-        notify(sys.argv[1])
+        # Pega os argumentos: etapa, nome, numero, resumo
+        notify(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
