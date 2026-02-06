@@ -12,5 +12,10 @@ A Sofia tem acesso aos seguintes comandos via terminal (exec):
 - **Quando usar:** Quando o cliente perguntar o preço em Reais ou Dólares, ou para converter Gs para outras moedas.
 - **Retorno:** JSON com as taxas de conversão.
 
-### 3. ClickUp (Em breve)
-- Planejado: Integração para criar tasks automaticamente.
+### 3. Gerenciar CRM (ClickUp)
+- **Comando Criar Lead:** `python3 workspace/sofia/tools/clickup_tool.py create "[Nome]" "[Número]" "[Resumo]"`
+- **Comando Mudar Status:** `python3 workspace/sofia/tools/clickup_tool.py status "[TASK_ID]" "[Novo Status]"`
+- **Quando usar:** 
+    - `create`: Quando o cliente for novo.
+    - `status`: Quando o cliente avançar no funil (ex: enviou receita, pagou).
+- **Nota:** Os status devem ser escritos exatamente como no ClickUp (ex: "receta recibida", "en producción").
