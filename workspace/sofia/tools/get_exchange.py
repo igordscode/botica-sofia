@@ -4,35 +4,46 @@ import sys
 
 def get_rates():
     try:
-        # Usando pares individuais para garantir que a API retorne as chaves certas
-        # USD-BRL (Dolar/Real), BRL-PYG (Real/Guarani), USD-PYG (Dolar/Guarani)
-        url = "https://economia.awesomeapi.com.br/last/USD-BRL,BRL-PYG,USD-PYG"
-        response = requests.get(url, timeout=10)
+        # Buscando os 3 principais pares
+        url = "https://economia.awesomeapi.com.br/last/USD-BRL,USD-PYG,BRL-PYG"
+        response = requests.get(url, timeout=15)
         data = response.json()
         
-        # A AwesomeAPI retorna chaves como 'BRLPYG', 'USDBRL', etc.
-        # Vamos usar .get() para evitar erros de chave inexistente
-        rate_brl_pyg = data.get('BRLPYG', {}).get('bid')
-        rate_usd_pyg = data.get('USDPYG', {}).get('bid')
-        rate_usd_brl = data.get('USDBRL', {}).get('bid')
-        
-        if not rate_brl_pyg:
-            # Fallback caso BRL-PYG falhe: calcular via USD
-            # (USD/PYG) / (USD/BRL) = BRL/PYG
-            if rate_usd_pyg and rate_usd_brl:
-                rate_brl_pyg = float(rate_usd_pyg) / float(rate_usd_brl)
-        
+        # Puxando os valores (bid)
+        # Usamos float() direto aqui para garantir que são números
+        try:
+            usd_brl = float(data.get('USDBRL', {}).get('bid', 0))
+            usd_pyg = float(data.get('USDPYG', {}).get('bid', 0))
+            brl_pyg = float(data.get('BRLPYG', {}).get('bid', 0))
+        except (ValueError, TypeError):
+            usd_brl = usd_pyg = brl_pyg = 0
+
+        # Lógica de Fallback (Se BRL-PYG direto estiver zerado ou N/A)
+        if brl_pyg == 0 and usd_brl > 0 and usd_pyg > 0:
+            brl_pyg = usd_pyg / usd_brl
+            info_msg = "Calculado via Cross-Rate (USD)."
+        elif brl_pyg > 0:
+            info_msg = "Cotação direta via AwesomeAPI."
+        else:
+            info_msg = "Erro: Dados insuficientes na API."
+
         result = {
-            "BRL_TO_PYG": float(rate_brl_pyg) if rate_brl_pyg else "N/A",
-            "USD_TO_PYG": float(rate_usd_pyg) if rate_usd_pyg else "N/A",
-            "USD_TO_BRL": float(rate_usd_brl) if rate_usd_brl else "N/A",
-            "INFO": "Cotações atualizadas via AwesomeAPI."
+            "BRL_TO_PYG": round(brl_pyg, 2) if brl_pyg > 0 else "N/A",
+            "USD_TO_PYG": round(usd_pyg, 2) if usd_pyg > 0 else "N/A",
+            "USD_TO_BRL": round(usd_brl, 2) if usd_brl > 0 else "N/A",
+            "INFO": info_msg
         }
         
         print(json.dumps(result, indent=2))
         
     except Exception as e:
-        print(f"Erro ao buscar câmbio: {str(e)}")
+        # Se der erro grave, mostra o que aconteceu
+        error_result = {
+            "BRL_TO_PYG": "N/A",
+            "ERROR": str(e),
+            "INFO": "Falha na conexão com o serviço de câmbio."
+        }
+        print(json.dumps(error_result, indent=2))
 
 if __name__ == "__main__":
     get_rates()
